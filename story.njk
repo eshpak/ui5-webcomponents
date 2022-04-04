@@ -1,0 +1,70 @@
+import { html} from 'lit-html';
+import '@ui5/webcomponents/dist/{{ component.resource }}';{% for dependency in component.dependencies %}
+import '@ui5/webcomponents/dist/{{ dependency }}.js';{% endfor %}
+import '../packages/icons/dist/AllIcons.js';
+import "../packages/main/dist/Assets.js";
+
+
+export default {
+  title: 'UI5 Web Components/{{ component.basename }}',
+  argTypes: { {% for prop in component.props -%} {% if prop.propValues|length -%}
+		{{prop.name}}: {
+			{% if prop.description -%}
+			description: `{{prop.description | replace("'", "\'")}}`,
+			{%- endif %}
+			control: { type: 'select' },
+			options: [
+				{% for value in prop.propValues -%}
+				'{{value}}',
+				{%- endfor %}
+			]
+		},{% else %}{%- endif %}{%- endfor %}
+  },
+};
+
+{# Overview #}
+{# ----------------------------------------------- #}
+const Template = (args) => {
+
+return html`
+<{{component.tagname}}
+{% for prop in component.props -%} {% if prop.defaultValue == 'false' %}
+	?{{prop.name}}="${ args['{{prop.name}}'] }" {% elif prop.defaultValue == 'true' %}
+	?{{prop.name}}="${ args['{{prop.name}}'] }" {% else %}
+	{{prop.kebab}}="${ args['{{prop.name}}'] }" {% endif %} {%- endfor %}
+>
+	{{content.text | replace('../../../assets/', '')}}
+</{{component.tagname}}>
+`; 
+}
+
+export const Overview = Template.bind({});
+Overview.args = {
+	{% for prop in component.props %}
+	{{prop.name}}: {{prop.defaultValue}},
+	{% endfor %}
+};
+
+
+{# Snippets #}
+{# ----------------------------------------------- #}
+{% for story in stories -%}
+const {{story.header}}Template = () => {
+	
+return html`
+{{story.snippet | replace('../../../assets/', '')}}
+${ 
+  (function () { setTimeout(function () { {{story.script}} }, 500) })()
+}`;
+}
+
+export const {{story.header}} = {{story.header}}Template.bind({});
+
+{{story.header}}.storyName = `{{ story.storyName }}`;
+{{story.header}}.parameters = {
+  controls: {
+		disabled: true,
+	}
+};
+
+{%- endfor %}

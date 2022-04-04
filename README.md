@@ -167,6 +167,21 @@ yarn build # to build the project
 Afterwards, you can find the build output in the `dist` folder of the corresponding package folder.
 For example, to find the Button component (that belongs to the `main` package), look inside the `packages/main/dist` folder.
 
+### How to generate stories and run storybook
+To generate stories run the following commands:
+
+```sh
+yarn # to install all dependencies
+yarn build # to build the project
+node stories.js # to generate stories
+```
+
+To run storybook run the following command:
+```sh
+yarn storybook
+# open http://localhost:6006/
+```
+
 ## Limitations
 None as of 1.0.0-rc.15.
 
